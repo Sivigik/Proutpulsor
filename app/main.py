@@ -8,7 +8,7 @@
 import pygame
 from pygame.locals import *
 # Set the screen size.
-screen = pygame.display.set_mode((0,0), FULLSCREEN)#(800, 480))
+screen = pygame.display.set_mode((800, 480)) #(0,0), FULLSCREEN)
 pygame.init()
 
 
