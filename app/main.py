@@ -1,17 +1,15 @@
-#-------------------------------------------------------------------------------
-# Name:        Proutpulsor
+# -------------------------------------------------------------------------------
+# Name:        main - Proutpulsor
 #
-# Author:      Sivigik
+# Author:      S.L-prog
 #
 # Licence:     <GNU GENERAL PUBLIC LICENSE>
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 import pygame
 from pygame.locals import *
 # Set the screen size.
 screen = pygame.display.set_mode((800, 480)) #(0,0), FULLSCREEN)
 pygame.init()
-
-
 
 import classes
 from constantes import *
@@ -32,8 +30,22 @@ TIMEREVENT = pygame.USEREVENT
 # The FPS the game runs at.
 FPS = 30
 
+
+def universegenerator():
+    extinguisher = [0,0,0,0,0,0,0,0,0,0]
+    for i in range(0,10):
+        extinguisher[i] = classes.Extinguisher(20,300, scrrec.center)
+
+    return extinguisher
+
+def afficheuniverse(extinguisher, screen, astronautx, astronauty, fart):
+
+    for i in range(0,10):
+        extinguisher[i].affiche(screen, astronautx, astronauty, fart)
+
 def main():
-    astronaut = classes.Astronaut(350, 240)
+    astronaut = classes.Astronaut(scrrec.center)
+    extinguisher = universegenerator()
 
     # Map the back button to the escape key.
     if android:
@@ -70,9 +82,21 @@ def main():
         # the game.
         elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
             break
+
+        if ev.type == pygame.KEYDOWN and ev.key == pygame.K_SPACE:
+            if astronaut.takeextinguisher == False:
+                astronaut.takeextinguisher = True
+            else:
+                astronaut.takeextinguisher = False
+
         astronaut.mouvement()
         screen.blit(BACKGROUND, (0,0))
+
+
+        afficheuniverse(extinguisher, screen, astronaut.astroposition_x, astronaut.astroposition_y, astronaut.fart)
+
         astronaut.affiche(screen)
+
         pygame.display.flip()
 
 # This isn't run on Android.
