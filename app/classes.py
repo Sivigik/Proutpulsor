@@ -38,7 +38,8 @@ class Astronaut(pygame.sprite.Sprite):
     def affiche(self, screen):
         self.rotation()
         radiangle = (self.angle*pi)/180 # fart shower
-        pygame.draw.line(screen, (150, 65, 12), (self.fartx, self.farty),  (self.fartx-50*(cos(radiangle)),self.farty-50*(sin(radiangle))), 10)  #affiche l'angle de rotation
+
+        #pygame.draw.line(screen, (150, 65, 12), (self.fartx, self.farty),  (self.fartx-50*(cos(radiangle)),self.farty-50*(sin(radiangle))), 10)  #affiche l'angle de rotation
 
         screen.blit(self.image, self.rect)
 
@@ -50,8 +51,8 @@ class Astronaut(pygame.sprite.Sprite):
 
         elif self.fart:
             radiangle = (self.angle*pi)/180
-            self.astroposition_x += 1*(cos(radiangle))
-            self.astroposition_y += 1*(sin(radiangle))
+            self.astroposition_x += 5*(cos(radiangle))
+            self.astroposition_y += 5*(sin(radiangle))
 
         else:
             self.angle -= (10 * pi / 180)  # pour faire bouger l'astronaute en continu
@@ -75,29 +76,30 @@ class Astronaut(pygame.sprite.Sprite):
 
 
 
-class Extinguisher(pygame.sprite.Sprite):
-    def __init__(self, x, y, screencenter):
+class Item(pygame.sprite.Sprite):
+    def __init__(self, x, y, screencenter, IMAGE):
         pygame.sprite.Sprite.__init__(self)
         self.x, self.y = screencenter
-        self.image = EXTINGUISHER
+        self.imageorigin = IMAGE
+        self.image = self.imageorigin
         self.rect = self.image.get_rect()
-        self.x = self.x + (random.randint(-200,200))
-        self.y = self.y + (random.randint(-200,200))
+        self.posx = self.x + (random.randint(-200,200))
+        self.posy = self.y + (random.randint(-200,200))
         self.rect.topleft = (self.x, self.y)
         self.anglederotation = random.randint(10,50)
         self.angle = 0
 
-    def affiche(self, screen, astroposition_x, astroposition_y, fart):
+    def affiche(self, screen, astroposition_x, astroposition_y):
         self.rotation()
-        if fart:
-            self.rect.x = self.rect.x - astroposition_x
-            self.rect.y = self.rect.y - astroposition_y
+        self.rect.x = self.posx - astroposition_x
+        self.rect.y = self.posy - astroposition_y
+
         screen.blit(self.image, self.rect)
         radiangle = (self.angle*pi)/180
-        pygame.draw.line(screen, (0,255,0), (150,150),  (150+50*(cos(radiangle)),150+50*(sin(radiangle))), 5)
+        #pygame.draw.line(screen, (0,255,0), (150,150),  (150+50*(cos(radiangle)),150+50*(sin(radiangle))), 5) #affiche vecteur direction
 
     def rotation(self):
         self.angle = self.angle - self.anglederotation*pi/180
-        self.image = EXTINGUISHER
+        self.image = self.imageorigin
         self.image= pygame.transform.rotate(self.image, 270-self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)

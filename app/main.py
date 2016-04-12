@@ -14,6 +14,8 @@ pygame.init()
 import classes
 from constantes import *
 
+import random
+
 scrrec = screen.get_rect()
 BACKGROUND = pygame.transform.scale(BACKGROUND, (scrrec.right, scrrec.bottom))
 
@@ -31,21 +33,41 @@ TIMEREVENT = pygame.USEREVENT
 FPS = 30
 
 
-def universegenerator():
-    extinguisher = [0,0,0,0,0,0,0,0,0,0]
-    for i in range(0,10):
-        extinguisher[i] = classes.Extinguisher(20,300, scrrec.center)
+def universegenerator(number_ext, number_ast, number_hamb):
+    extinguisher = [0]*number_ext
+    for i in range(0,number_ext):
+        extinguisher[i] = classes.Item(20,300, scrrec.center, EXTINGUISHER)
 
-    return extinguisher
+    asteroid = [0]*number_ast
+    for i in range(0,number_ast):
+        randomvar = random.randint(1,4)
+        if randomvar == 1:
+            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID1)
+        if randomvar == 2:
+            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID2)
+        if randomvar == 3:
+            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID3)
+        if randomvar == 4:
+            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID4)
 
-def afficheuniverse(extinguisher, screen, astronautx, astronauty, fart):
+    hamberger = [0]*number_hamb
+    for i in range(0,number_hamb):
+        hamberger[i] = classes.Item(20,300, scrrec.center, HAMBURGER)
 
-    for i in range(0,10):
-        extinguisher[i].affiche(screen, astronautx, astronauty, fart)
+    return extinguisher, asteroid, hamberger
+
+def afficheuniverse(extinguisher, asteroid, hamberger, screen, astronautx, astronauty):
+
+    for i in range(0,len(extinguisher)):
+        extinguisher[i].affiche(screen, astronautx, astronauty)
+    for i in range(0,len(asteroid)):
+        asteroid[i].affiche(screen, astronautx, astronauty)
+    for i in range(0,len(hamberger)):
+        hamberger[i].affiche(screen, astronautx, astronauty)
 
 def main():
     astronaut = classes.Astronaut(scrrec.center)
-    extinguisher = universegenerator()
+    extinguisher, asteroid, hamburger = universegenerator(2,6,5)
 
     # Map the back button to the escape key.
     if android:
@@ -93,7 +115,7 @@ def main():
         screen.blit(BACKGROUND, (0,0))
 
 
-        afficheuniverse(extinguisher, screen, astronaut.astroposition_x, astronaut.astroposition_y, astronaut.fart)
+        afficheuniverse(extinguisher, asteroid, hamburger, screen, astronaut.astroposition_x, astronaut.astroposition_y)
 
         astronaut.affiche(screen)
 
