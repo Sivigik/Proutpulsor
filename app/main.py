@@ -50,24 +50,24 @@ def universegenerator(number_ext, number_ast, number_hamb):
         if randomvar == 4:
             asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID4)
 
-    hamberger = [0]*number_hamb
+    hamburger = [0]*number_hamb
     for i in range(0,number_hamb):
-        hamberger[i] = classes.Item(20,300, scrrec.center, HAMBURGER)
+        hamburger[i] = classes.Item(20,300, scrrec.center, HAMBURGER)
 
-    return extinguisher, asteroid, hamberger
+    return extinguisher, asteroid, hamburger
 
-def afficheuniverse(extinguisher, asteroid, hamberger, screen, astronautx, astronauty):
+def afficheuniverse(extinguisher, asteroid, hamburger, screen, astronautx, astronauty):
 
     for i in range(0,len(extinguisher)):
         extinguisher[i].affiche(screen, astronautx, astronauty)
     for i in range(0,len(asteroid)):
         asteroid[i].affiche(screen, astronautx, astronauty)
-    for i in range(0,len(hamberger)):
-        hamberger[i].affiche(screen, astronautx, astronauty)
+    for i in range(0,len(hamburger)):
+        hamburger[i].affiche(screen, astronautx, astronauty)
 
 def main():
     astronaut = classes.Astronaut(scrrec.center)
-    extinguisher, asteroid, hamburger = universegenerator(2,6,5)
+    extinguisher, asteroid, hamburger = universegenerator(50,200,50) # nombre d'items au depart
 
     # Map the back button to the escape key.
     if android:
@@ -78,42 +78,35 @@ def main():
     pygame.time.set_timer(TIMEREVENT, 1000 / FPS)
 
     screenleft = screen.get_width()/2
-
     while True:
-
-        ev = pygame.event.wait()
 
         # Android-specific:
         if android:
             if android.check_pause():
                 android.wait_for_resume()
 
-        if ev.type == pygame.MOUSEBUTTONDOWN:
-            if ev.pos[0] <= screenleft:
-                astronaut.extinguisher = True
-            elif ev.pos[0] > screenleft:
-                astronaut.fart = True
+        for ev in pygame.event.get():
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                if ev.pos[0] <= screenleft:
+                    astronaut.extinguisher = True
+                elif ev.pos[0] > screenleft:
+                    astronaut.fart = True
 
+            if ev.type == pygame.MOUSEBUTTONUP:
+                astronaut.extinguisher = False
+                astronaut.fart = False
 
-        elif ev.type == pygame.MOUSEBUTTONUP:
-            astronaut.extinguisher = False
-            astronaut.fart = False
+            if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
+                pygame.quit() #probleme pour quitter
 
-
-        # When the user hits back, ESCAPE is sent. Handle it and end
-        # the game.
-        elif ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
-            break
-
-        if ev.type == pygame.KEYDOWN and ev.key == pygame.K_SPACE:
-            if astronaut.takeextinguisher == False:
-                astronaut.takeextinguisher = True
-            else:
-                astronaut.takeextinguisher = False
+            if ev.type == pygame.KEYDOWN and ev.key == pygame.K_SPACE:
+                if astronaut.takeextinguisher == False:
+                    astronaut.takeextinguisher = True
+                else:
+                    astronaut.takeextinguisher = False
 
         astronaut.mouvement()
         screen.blit(BACKGROUND, (0,0))
-
 
         afficheuniverse(extinguisher, asteroid, hamburger, screen, astronaut.astroposition_x, astronaut.astroposition_y)
 
@@ -121,6 +114,5 @@ def main():
 
         pygame.display.flip()
 
-# This isn't run on Android.
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
