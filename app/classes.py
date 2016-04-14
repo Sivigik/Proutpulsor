@@ -21,6 +21,8 @@ class Astronaut(pygame.sprite.Sprite):
 
         self.image_astronaut = ASTRONAUT
         self.image_astronautext = ASTRONAUTEXT
+        self.image_astronautext_flip = ASTRONAUTEXT_FLIP
+
         self.image = self.image_astronaut
         self.rect = self.image.get_rect()
         self.rect.center = screencenter
@@ -29,7 +31,11 @@ class Astronaut(pygame.sprite.Sprite):
         self.extinguisher_right = False
         self.extinguisher_left = False
         self.fart = False
-        self.angle = -89
+        self.angle = 270
+
+        self.horizontal_speed = 0
+        self.vertical_speed = 0
+        self.rotation_speed = 0
 
         self.takeextinguisher = True
 
@@ -48,28 +54,33 @@ class Astronaut(pygame.sprite.Sprite):
     def mouvement(self):
         if self.takeextinguisher:
             if self.extinguisher_right:
-                self.angle -= 1
+                self.rotation_speed = -1
             elif self.extinguisher_left:
-                self.angle += 1
-            if self.angle > 360: #pour eviter des angles trop grands
-                self.angle = 0
-            if self.angle < 0:
-                self.angle = 360
+                self.rotation_speed = 1
 
         if self.fart:
             radiangle = (self.angle*pi)/180
-            self.astroposition_x += 1*(cos(radiangle))
-            self.astroposition_y += 1*(sin(radiangle))
+            self.horizontal_speed = 1*(cos(radiangle))
+            self.vertical_speed = 1*(sin(radiangle))
 
-        #else:
-        #    self.angle -= (0.25 * pi / 180)  # pour faire bouger l'astronaute en continu
+        #inertie:
+        self.angle += self.rotation_speed
+        if self.angle > 360: #pour eviter des angles trop grands
+            self.angle = 0
+        if self.angle < 0:
+            self.angle = 360
+        self.astroposition_x += self.horizontal_speed
+        self.astroposition_y += self.vertical_speed
 
     def collision(self, rectangle):
         pass
 
     def rotation(self):  # retourne l'image par son milieu
         if self.takeextinguisher:
-            self.image = self.image_astronautext
+            if self.rotation_speed <= 0:
+                self.image = self.image_astronautext
+            else:
+                self.image = self.image_astronautext_flip
         else:
             self.image = self.image_astronaut
         self.image = pygame.transform.rotate(self.image, 270-self.angle)

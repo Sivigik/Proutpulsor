@@ -11,6 +11,7 @@ from pygame.locals import *
 
 ASTRONAUT = pygame.image.load("images/astronaut.png").convert_alpha()
 ASTRONAUTEXT = pygame.image.load("images/astronautext.png").convert_alpha()
+ASTRONAUTEXT_FLIP = pygame.image.load("images/astronautext_flip.png").convert_alpha()
 
 EXTINGUISHER = pygame.image.load("images/extinguisher.png").convert_alpha()
 

@@ -115,6 +115,7 @@ def main():
                     astronaut.takeextinguisher = False
 
         astronaut.mouvement()
+
         screen.blit(BACKGROUND, (0,0))
 
         pygame.draw.line(screen, (255, 0, 0), (screenleft, 0), (screenleft,screentop*2), 5) # afficher delimitation
