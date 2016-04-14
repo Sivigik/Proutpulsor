@@ -8,7 +8,7 @@
 import pygame
 from pygame.locals import *
 # Set the screen size.
-screen = pygame.display.set_mode((800, 480)) #(0,0), FULLSCREEN)
+screen = pygame.display.set_mode((0,0), FULLSCREEN) #(800, 480)) #
 pygame.init()
 
 import classes
@@ -36,34 +36,34 @@ FPS = 30
 def universegenerator(number_ext, number_ast, number_hamb):
     extinguisher = [0]*number_ext
     for i in range(0,number_ext):
-        extinguisher[i] = classes.Item(20,300, scrrec.center, EXTINGUISHER)
+        extinguisher[i] = classes.Item(scrrec.center, EXTINGUISHER)
 
     asteroid = [0]*number_ast
     for i in range(0,number_ast):
         randomvar = random.randint(1,4)
         if randomvar == 1:
-            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID1)
+            asteroid[i] = classes.Item(scrrec.center, ASTEROID1)
         if randomvar == 2:
-            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID2)
+            asteroid[i] = classes.Item(scrrec.center, ASTEROID2)
         if randomvar == 3:
-            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID3)
+            asteroid[i] = classes.Item(scrrec.center, ASTEROID3)
         if randomvar == 4:
-            asteroid[i] = classes.Item(20,300, scrrec.center, ASTEROID4)
+            asteroid[i] = classes.Item(scrrec.center, ASTEROID4)
 
     hamburger = [0]*number_hamb
     for i in range(0,number_hamb):
-        hamburger[i] = classes.Item(20,300, scrrec.center, HAMBURGER)
+        hamburger[i] = classes.Item(scrrec.center, HAMBURGER)
 
     return extinguisher, asteroid, hamburger
 
-def afficheuniverse(extinguisher, asteroid, hamburger, screen, astronautx, astronauty):
+def displayuniverse(extinguisher, asteroid, hamburger, screen, astronautx, astronauty):
 
     for i in range(0,len(extinguisher)):
-        extinguisher[i].affiche(screen, astronautx, astronauty)
+        extinguisher[i].display(screen, astronautx, astronauty)
     for i in range(0,len(asteroid)):
-        asteroid[i].affiche(screen, astronautx, astronauty)
+        asteroid[i].display(screen, astronautx, astronauty)
     for i in range(0,len(hamburger)):
-        hamburger[i].affiche(screen, astronautx, astronauty)
+        hamburger[i].display(screen, astronautx, astronauty)
 
 def main():
     astronaut = classes.Astronaut(scrrec.center)
@@ -74,11 +74,15 @@ def main():
         android.init()
         android.map_key(android.KEYCODE_BACK, pygame.K_ESCAPE)
 
-    # Use a timer to control FPS.
-    pygame.time.set_timer(TIMEREVENT, 1000 / FPS)
+    #a reactiver pour python 2.7
+    #pygame.time.set_timer(TIMEREVENT, 1000 / FPS)
 
     screenleft = screen.get_width()/2
-    while True:
+    screentop = screen.get_height()/2
+
+    game = True
+
+    while game:
 
         # Android-specific:
         if android:
@@ -88,16 +92,21 @@ def main():
         for ev in pygame.event.get():
             if ev.type == pygame.MOUSEBUTTONDOWN:
                 if ev.pos[0] <= screenleft:
-                    astronaut.extinguisher = True
-                elif ev.pos[0] > screenleft:
+                    if ev.pos[1] <= screentop:
+                        astronaut.extinguisher_right = True
+                    if ev.pos[1] > screentop:
+                        astronaut.extinguisher_left = True
+
+                if ev.pos[0] > screenleft:
                     astronaut.fart = True
 
             if ev.type == pygame.MOUSEBUTTONUP:
-                astronaut.extinguisher = False
+                astronaut.extinguisher_right = False
+                astronaut.extinguisher_left = False
                 astronaut.fart = False
 
             if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
-                pygame.quit() #probleme pour quitter
+                game = False
 
             if ev.type == pygame.KEYDOWN and ev.key == pygame.K_SPACE:
                 if astronaut.takeextinguisher == False:
@@ -108,11 +117,20 @@ def main():
         astronaut.mouvement()
         screen.blit(BACKGROUND, (0,0))
 
-        afficheuniverse(extinguisher, asteroid, hamburger, screen, astronaut.astroposition_x, astronaut.astroposition_y)
+        pygame.draw.line(screen, (255, 0, 0), (screenleft, 0), (screenleft,screentop*2), 5) # afficher delimitation
+        pygame.draw.line(screen, (255, 0, 0), (0, screentop), (screenleft,screentop), 5) # afficher delimitation
 
-        astronaut.affiche(screen)
+        displayuniverse(extinguisher, asteroid, hamburger, screen, astronaut.astroposition_x, astronaut.astroposition_y)
+
+        astronaut.display(screen)
 
         pygame.display.flip()
 
-if __name__ == '__main__':
-    main()
+    pygame.quit()
+
+#a reactiver pour python 2.7
+#if __name__ == '__main__':
+#    main()
+
+#a desactiver pour python 2.7
+main()

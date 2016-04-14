@@ -26,7 +26,8 @@ class Astronaut(pygame.sprite.Sprite):
         self.rect.center = screencenter
         self.astroposition_x = 0
         self.astroposition_y = 0
-        self.extinguisher = False
+        self.extinguisher_right = False
+        self.extinguisher_left = False
         self.fart = False
         self.angle = -89
 
@@ -35,27 +36,33 @@ class Astronaut(pygame.sprite.Sprite):
         self.fartx, self.farty = screencenter
 
 
-    def affiche(self, screen):
+    def display(self, screen):
         self.rotation()
         radiangle = (self.angle*pi)/180 # fart shower
 
-        #pygame.draw.line(screen, (150, 65, 12), (self.fartx, self.farty),  (self.fartx-50*(cos(radiangle)),self.farty-50*(sin(radiangle))), 10)  #affiche l'angle de rotation
+        #pygame.draw.line(screen, (150, 65, 12), (self.fartx, self.farty),
+        #(self.fartx-50*(cos(radiangle)),self.farty-50*(sin(radiangle))), 10)  #affiche l'angle de rotation
 
         screen.blit(self.image, self.rect)
 
     def mouvement(self):
-        if self.extinguisher and self.takeextinguisher:
-            self.angle -= 1
-            if self.angle > 360:
+        if self.takeextinguisher:
+            if self.extinguisher_right:
+                self.angle -= 1
+            elif self.extinguisher_left:
+                self.angle += 1
+            if self.angle > 360: #pour eviter des angles trop grands
                 self.angle = 0
+            if self.angle < 0:
+                self.angle = 360
 
-        elif self.fart:
+        if self.fart:
             radiangle = (self.angle*pi)/180
             self.astroposition_x += 1*(cos(radiangle))
             self.astroposition_y += 1*(sin(radiangle))
 
-        else:
-            self.angle -= (0.25 * pi / 180)  # pour faire bouger l'astronaute en continu
+        #else:
+        #    self.angle -= (0.25 * pi / 180)  # pour faire bouger l'astronaute en continu
 
     def collision(self, rectangle):
         pass
@@ -77,7 +84,7 @@ class Astronaut(pygame.sprite.Sprite):
 
 
 class Item(pygame.sprite.Sprite):
-    def __init__(self, x, y, screencenter, IMAGE):
+    def __init__(self, screencenter, IMAGE):
         pygame.sprite.Sprite.__init__(self)
         self.x, self.y = screencenter
         self.imageorigin = IMAGE
@@ -89,7 +96,7 @@ class Item(pygame.sprite.Sprite):
         self.anglederotation = random.randint(-20,20)
         self.angle = 0
 
-    def affiche(self, screen, astroposition_x, astroposition_y):
+    def display(self, screen, astroposition_x, astroposition_y):
         self.rotation()
 
         self.x = self.posx - astroposition_x
@@ -97,8 +104,10 @@ class Item(pygame.sprite.Sprite):
         self.rect.center = (self.x, self.y)
 
         screen.blit(self.image, self.rect)
+
         #radiangle = (self.angle*pi)/180
-        #pygame.draw.line(screen, (0,255,0), (150,150),  (150+50*(cos(radiangle)),150+50*(sin(radiangle))), 5) #affiche vecteur direction
+        #pygame.draw.line(screen, (0,255,0), (150,150),
+        #(150+50*(cos(radiangle)),150+50*(sin(radiangle))), 5) #affiche vecteur direction
 
     def rotation(self):
         self.angle -= self.anglederotation * pi / 180
